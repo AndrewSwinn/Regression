@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import os
 import math
 import copy
 from   more_itertools import powerset
@@ -9,7 +9,7 @@ from   ucimlrepo import fetch_ucirepo
 from   sklearn.model_selection import train_test_split
 
 # Load and split the data
-wine = pd.read_csv('wine.csv')
+wine = pd.read_csv(os.path.join('wine','wine.csv'))
 
 pred_dict = {0:'fixed acidity',        1:'volatile acidity', 2:'citric acid', 3:'residual sugar',  4:'chlorides', 5:'free sulfur dioxide',
              6:'total sulfur dioxide', 7:'density',          8:'pH',          9:'sulphates',      10:'alcohol'}
@@ -38,8 +38,11 @@ phi_players = {player: round(phi({player}, pred_set),5) for player in pred_set}
 
 sorted_items = sorted(phi_players.items(), key=lambda kv: (kv[1], kv[0]))
 
+R2=0
 for player, value in sorted_items:
+    R2 += value
     print(player, value)
+print('Total:', R2)
 
 
 
