@@ -25,9 +25,9 @@ data = np.random.multivariate_normal(mean=np.zeros(3), cov=corr, size=samples, c
 
 
 # Create 3D figure
-fig, (ctl, ax) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [1, 4]})
+fig, (ctl, ax) = plt.subplots(figsize=(15,12), nrows=2, ncols=1, gridspec_kw={'height_ratios': [1, 4]})
 
-ctl = fig.add_subplot(211, aspect='auto')
+ctl = fig.add_subplot(211, aspect='auto', frame_on=False)
 ax  = fig.add_subplot(212, projection='3d', aspect='auto')
 
 ctl.get_xaxis().set_visible(False)
