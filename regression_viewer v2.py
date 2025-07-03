@@ -15,10 +15,14 @@ def covarience(radius, alpha):
 samples = 500
 colours = ['red', 'green', 'black']
 
-corr     = covarience(0.9, 0.1)
+corr     = covarience(0.8, 0.2)
 pca      = np.linalg.eig(corr)
 data     = np.random.multivariate_normal(mean=np.zeros(3), cov=corr, size=samples, check_valid='warn')
 pca_proj = np.matmul(data,pca.eigenvectors)
+print(pca.eigenvalues)
+print(pca.eigenvectors)
+
+
 
 
 def get_data(show_pca):
