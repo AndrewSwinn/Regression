@@ -25,6 +25,8 @@ ax.set_ylabel('Damped oscillation')
 # Second subplot
 ax = fig.add_subplot(2, 1, 2, projection='3d')
 
+axes['B'].quiver(0, 0, vector[0], vector[1], color=colours[c])
+
 X = np.arange(-5, 5, 0.25)
 Y = np.arange(-5, 5, 0.25)
 X, Y = np.meshgrid(X, Y)

@@ -8,8 +8,10 @@ from   operator import itemgetter
 from   ucimlrepo import fetch_ucirepo
 from   sklearn.model_selection import train_test_split
 
+project_root = '/mnt/c/Users/aswin/GitHub/Regression'
+
 # Load and split the data
-wine = pd.read_csv(os.path.join('wine','wine.csv'))
+wine = pd.read_csv(os.path.join(project_root,'wine','wine.csv'))
 
 pred_dict = {0:'fixed acidity',        1:'volatile acidity', 2:'citric acid', 3:'residual sugar',  4:'chlorides', 5:'free sulfur dioxide',
              6:'total sulfur dioxide', 7:'density',          8:'pH',          9:'sulphates',      10:'alcohol'}
@@ -37,6 +39,8 @@ def phi(j, N):
 phi_players = {player: round(phi({player}, pred_set),5) for player in pred_set}
 
 sorted_items = sorted(phi_players.items(), key=lambda kv: (kv[1], kv[0]))
+
+
 
 R2=0
 for player, value in sorted_items:

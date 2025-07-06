@@ -15,14 +15,12 @@ def covarience(radius, alpha):
 samples = 500
 colours = ['red', 'green', 'black']
 
-corr     = covarience(0.8, 0.2)
+corr     = covarience(1, 0.5)
 pca      = np.linalg.eig(corr)
+
+
 data     = np.random.multivariate_normal(mean=np.zeros(3), cov=corr, size=samples, check_valid='warn')
 pca_proj = np.matmul(data,pca.eigenvectors)
-print(pca.eigenvalues)
-print(pca.eigenvectors)
-
-
 
 
 def get_data(show_pca):
@@ -55,8 +53,10 @@ axes['A'].set_xlabel(axis_labels[0])
 axes['A'].set_ylabel(axis_labels[1])
 axes['A'].set_zlabel(axis_labels[2])
 scatter = axes['A'].scatter(x1, x2, y)
-for c, vector in enumerate(pca.eigenvectors):
-    axes['A'].quiver(0,0,0, vector[0], vector[1], vector[2], color=colours[c])
+vectors = pca.eigenvectors
+for c, value in enumerate(pca.eigenvalues):
+    print(value, colours[c])
+    axes['A'].quiver(0,0,0, vectors[0][c], vectors[1][c], vectors[2][c], color=colours[c])
 
 
 axes['B'].set_xlabel(axis_labels[0])
