@@ -1,4 +1,5 @@
 import math
+import copy
 import numpy as np
 from   more_itertools import powerset
 from   sklearn.model_selection import train_test_split
@@ -89,6 +90,26 @@ class shapley:
 
         return phi_i
 
+    def shap_add(self, X):
+
+        def masker(X, coalition):
+            X_masked = copy.deepcopy(X)
+            X_masked[:, list(coalition)] = np.mean(X,axis=0)[list(coalition)]
+            return X_masked
+
+        def value(X, coalition):
+            return self.model.predict(masker(X, coalition)) - np.mean(model.predict(data.X_test), axis=0)
+
+        def marginal(X, player, coalition):
+            return value(X, coalition.union(player)) - value(X, coalition)
+
+        def phi(X,player):
+            players = self.grand_coalition - player
+            return np.sum([self.gamma(coalition) * marginal(X, player, set(coalition)) for coalition in powerset(players)], axis=0)
+
+        phi_i = np.array([phi(X, {player}) for player in self.grand_coalition]).T
+
+        return phi_i
 
 
 
@@ -103,8 +124,13 @@ if __name__ == "__main__":
 
     data        = dataset(dimensions=6, samples=1000)
     players     = data.features
-    model       = regression_model(data.training())
+    model       = regression_model((data.X_train, data.y_train))
 
-    explainer  = shapley(model, data.training(), players)
+    explainer  = shapley(model, (data.X_train, data.y_train), players)
 
-    print(explainer.regression_coeff(), sum(explainer.regression_coeff()), model.R2)
+    predictions = model.predict(data.X_test)
+    expectation = np.mean(model.predict(data.X_test))
+
+    for idx in range (3):
+
+        print(idx, explainer.shap_add(data.X_test)[idx], sum(explainer.shap_add(data.X_test)[idx]) , predictions[idx]- expectation)
