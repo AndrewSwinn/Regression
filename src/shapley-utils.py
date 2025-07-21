@@ -61,7 +61,7 @@ class regression_model:
 
 class shapley:
 
-    def __init__(self, model,  data, grand_coalition):
+    def __init__(self, model, data, grand_coalition):
         self.model     = model
         self.X, self.y = data
         self.grand_coalition = grand_coalition
@@ -126,10 +126,15 @@ if __name__ == "__main__":
     players     = data.features
     model       = regression_model((data.X_train, data.y_train))
 
-    explainer  = shapley(model, (data.X_train, data.y_train), players)
+    explainer  = shapley(model, data.training(),  players)
 
     predictions = model.predict(data.X_test)
     expectation = np.mean(model.predict(data.X_test))
+
+    print('Shapley R2 Explainer')
+    print(explainer.regression_coeff())
+
+    print('Shapley SHAP Explainer')
 
     for idx in range (3):
 
