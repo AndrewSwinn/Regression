@@ -28,6 +28,8 @@ class dataset:
         self.X, self.y = self.data[:,:-1], self.data[:,-1]
 
 
+
+
 if __name__ == "__main__":
 
 
