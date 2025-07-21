@@ -26,9 +26,9 @@ axfreq = fig.add_axes([0.05, 0.10, 0.05, 0.3])
 bxfreq = fig.add_axes([0.10, 0.10, 0.05, 0.3])
 cxfreq = fig.add_axes([0.15, 0.10, 0.05, 0.3])
 
-alpha  = Slider(ax=axfreq, label=r'$\alpha$', valmin=0.0, valmax=1.0, valinit=0.0, valstep=0.05, orientation="vertical")
-beta   = Slider(ax=bxfreq, label=r'$\beta$' , valmin=0.0, valmax=1.0, valinit=0.0, valstep=0.05, orientation="vertical")
-gamma  = Slider(ax=cxfreq, label=r'$\gamma$', valmin=0.0, valmax=1.0, valinit=0.0, valstep=0.05, orientation="vertical")
+alpha  = Slider(ax=axfreq, label=r'$\alpha$', valmin=0.0, valmax=1.0, valinit=0.0, valstep=0.01, orientation="vertical")
+beta   = Slider(ax=bxfreq, label=r'$\beta$' , valmin=0.0, valmax=1.0, valinit=0.0, valstep=0.01, orientation="vertical")
+gamma  = Slider(ax=cxfreq, label=r'$\gamma$', valmin=0.0, valmax=1.0, valinit=0.0, valstep=0.01, orientation="vertical")
 
 #Make box to contain information
 axinfo = fig.add_axes([0.05, 0.5, 0.25, 0.45])
@@ -87,12 +87,14 @@ def update(val):
     axinfo.set_xlim(0, 10)
     axinfo.set_ylim(0, 10)
     axinfo.axis('off')
-    axinfo.text(0.5, 10, r'$\Sigma(X,y)=\begin{pmatrix}' + S_Xy + '\\end{pmatrix}$')
-    axinfo.text(0.5, 8, r'$C=\begin{pmatrix}' + S_X + '\\end{pmatrix}$')
-    axinfo.text(6.5, 8, r'$r=\begin{pmatrix}' + XTy + '\\end{pmatrix}$')
-    axinfo.text(0.5, 6, r'$a=C^{-1}r=\begin{pmatrix}' + aV + '\\end{pmatrix}$')
-    axinfo.text(0.5,4, r'$|\Sigma|='+str(round(det,2))+'$')
-    axinfo.text(0.5, 2, r'$R^2=a^TCa=' + str(round(R2, 2)) + '$')
+    axinfo.text(0.5, 9.0, r'$\Sigma(X,y)=\begin{pmatrix}' + S_Xy + '\\end{pmatrix}$')
+    axinfo.text(0.5, 7.5, r'$\mathcal{N}(x_1, x_2)=\frac{1}{2\pi\sqrt{|\Sigma|}}e^{X^T\Sigma X}$')
+    axinfo.text(0.5, 6.3, r'$X^T\Sigma X = 1$ describes an ellipsoid (see right)')
+    axinfo.text(0.5, 4.2, r'$C=\begin{pmatrix}' + S_X + '\\end{pmatrix}$')
+    axinfo.text(6.5, 3, r'$r=\begin{pmatrix}' + XTy + '\\end{pmatrix}$')
+    axinfo.text(0.5, 3, r'$a=C^{-1}r=\begin{pmatrix}' + aV + '\\end{pmatrix}$')
+    axinfo.text(0.5,2, r'$|\Sigma|='+str(round(det,2))+'$')
+    axinfo.text(0.5, 1, r'$R^2=a^TCa=' + str(round(R2, 2)) + '$')
     fig.canvas.draw_idle()
 
 
