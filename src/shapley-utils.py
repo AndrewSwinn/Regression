@@ -42,7 +42,7 @@ class dataset:
 
 
 
-class model:
+class regression_model:
 
     def __init__(self, data):
 
@@ -61,7 +61,6 @@ class model:
 class shapley:
 
     def __init__(self, model,  data, grand_coalition):
-
         self.model     = model
         self.X, self.y = data
         self.grand_coalition = grand_coalition
@@ -72,19 +71,23 @@ class shapley:
         return math.factorial(S) * math.factorial(N - S - 1) / math.factorial(N)
 
 
+    def regression_coeff(self):
 
-    def local(self):
+        def value(coalition):
+            X_subset     = self.X[:, list(coalition)]
+            model_subset = regression_model((X_subset, self.y))
+            return model_subset.R2
 
         def marginal(player, coalition):
-
-            return 1
-
+            return value(coalition.union(player)) - value(coalition)
 
         def phi(player):
             players = self.grand_coalition - player
             return np.sum([self.gamma(coalition) * marginal(player, set(coalition)) for coalition in powerset(players)])
 
-        return phi({1})
+        phi_i = [phi({player}) for player in self.grand_coalition]
+
+        return phi_i
 
 
 
@@ -100,8 +103,8 @@ if __name__ == "__main__":
 
     data        = dataset(dimensions=6, samples=1000)
     players     = data.features
-    model       = model(data.training())
+    model       = regression_model(data.training())
 
-    explainer  = shapley(model, data.testing(), players)
+    explainer  = shapley(model, data.training(), players)
 
-    print(explainer.local())
+    print(explainer.regression_coeff(), sum(explainer.regression_coeff()), model.R2)
