@@ -1,4 +1,6 @@
+import math
 import numpy as np
+from   more_itertools import powerset
 from   sklearn.model_selection import train_test_split
 
 class dataset:
@@ -31,18 +33,63 @@ class dataset:
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, random_state=42)
         self.features = {i for i in range(self.dimensions-1)}
 
+    def training(self):
+        return self.X_train, self.y_train
+
+    def testing(self):
+        return self.X_test, self.y_test
+
+
 
 
 class model:
 
-    def __init__(self, dataset):
+    def __init__(self, data):
 
-        self.dataset = dataset
-        self.C = np.matmul(dataset.X_train.T, dataset.X_train) / dataset.X_train.shape[0]
-        self.r = np.matmul(dataset.X_train.T, dataset.y_train).T / dataset.X_train.shape[0]
+        X, y = data
+        self.C = np.matmul(X.T, X) / X.shape[0]
+        self.r = np.matmul(X.T, y) / X.shape[0]
         self.a = np.matmul(np.linalg.inv(self.C), self.r)
 
         self.R2 = np.matmul(self.a.T, np.matmul(self.C, self.a))
+
+    def predict(self, X):
+        y_hat = np.matmul(X, self.a)
+        return y_hat
+
+
+class shapley:
+
+    def __init__(self, model,  data, grand_coalition):
+
+        self.model     = model
+        self.X, self.y = data
+        self.grand_coalition = grand_coalition
+
+    def gamma(self, coalition):
+        N = len(self.grand_coalition)
+        S = len(coalition)
+        return math.factorial(S) * math.factorial(N - S - 1) / math.factorial(N)
+
+
+
+    def local(self):
+
+        def marginal(player, coalition):
+
+            return 1
+
+
+        def phi(player):
+            players = self.grand_coalition - player
+            return np.sum([self.gamma(coalition) * marginal(player, set(coalition)) for coalition in powerset(players)])
+
+        return phi({1})
+
+
+
+
+
 
 
 
@@ -51,5 +98,10 @@ if __name__ == "__main__":
 
     print('Testing shapley functions')
 
-    model = model(dataset(6,1000))
-    print(model.R2)
+    data        = dataset(dimensions=6, samples=1000)
+    players     = data.features
+    model       = model(data.training())
+
+    explainer  = shapley(model, data.testing(), players)
+
+    print(explainer.local())
