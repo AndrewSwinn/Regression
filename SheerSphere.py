@@ -54,7 +54,7 @@ def update(val):
 
     S_Xy =  '1 & ' + str(round(a,2)) + ' & ' + str(round(b,2)) + ' \\\\ ' +  str(round(a,2)) + ' & 1 & ' +      str(round(c,2)) + ' \\\\ ' +  str(round(b,2)) + ' & ' + str(round(c,2)) + '  & 1 '
     S_X  = '1 & ' + str(round(a, 2)) + ' \\\\ ' +  str(round(a,2)) + ' & 1 '
-    XTy    = str(round(b,2)) + ' \\\\ ' +  str(round(a,2))
+    XTy    = str(round(b,2)) + ' \\\\ ' +  str(round(c,2))
     aV     = str(round(coeff[0].item(),2)) + '\\\\' + str(round(coeff[1].item(),2))
 
 
