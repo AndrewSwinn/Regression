@@ -125,7 +125,6 @@ if __name__ == "__main__":
     data        = dataset(dimensions=6, samples=1000)
     players     = data.features
     model       = regression_model((data.X_train, data.y_train))
-
     explainer  = shapley(model, data.training(),  players)
 
     predictions = model.predict(data.X_test)
