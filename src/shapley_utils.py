@@ -98,7 +98,7 @@ class shapley:
             return X_masked
 
         def value(X, coalition):
-            return self.model.predict(masker(X, coalition)) - np.mean(model.predict(data.X_test), axis=0)
+            return self.model.predict(masker(X, coalition)) - np.mean(self.model.predict(self.X), axis=0)
 
         def marginal(X, player, coalition):
             return value(X, coalition.union(player)) - value(X, coalition)
