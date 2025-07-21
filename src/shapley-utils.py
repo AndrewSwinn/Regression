@@ -1,4 +1,5 @@
 import numpy as np
+from   sklearn.model_selection import train_test_split
 
 class dataset:
 
@@ -27,6 +28,21 @@ class dataset:
         self.data = np.random.multivariate_normal(mean=np.zeros(self.dimensions), cov=self.corr, size=samples)
         self.X, self.y = self.data[:,:-1], self.data[:,-1]
 
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.2, random_state=42)
+        self.features = {i for i in range(self.dimensions-1)}
+
+
+
+class model:
+
+    def __init__(self, dataset):
+
+        self.dataset = dataset
+        self.C = np.matmul(dataset.X_train.T, dataset.X_train) / dataset.X_train.shape[0]
+        self.r = np.matmul(dataset.X_train.T, dataset.y_train).T / dataset.X_train.shape[0]
+        self.a = np.matmul(np.linalg.inv(self.C), self.r)
+
+        self.R2 = np.matmul(self.a.T, np.matmul(self.C, self.a))
 
 
 
@@ -35,5 +51,5 @@ if __name__ == "__main__":
 
     print('Testing shapley functions')
 
-    data = dataset(6,1000)
-    print(data.X.shape, data.y.shape)
+    model = model(dataset(6,1000))
+    print(model.R2)
