@@ -72,5 +72,5 @@ if __name__ == "__main__":
         print(name)
         phi_i = Shapley(X, y, model, mean_absolute_error)
         for feature, phi in phi_i.items():
-            print(feature, phi)
+            print(feature,',', phi)
         print('==========================')
