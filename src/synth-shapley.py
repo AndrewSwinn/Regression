@@ -49,7 +49,7 @@ def Shapley(X,y, model_type, value_function):
             coalition_minus = set(coalition_minus)
             coalition       = coalition_minus.union({i})
             marginal        = value(coalition, results) - value(coalition_minus, results)
-            phi += gamma(players, coalition) * marginal
+            phi += gamma(players, coalition_minus) * marginal
         phi_i[i] = phi
 
     return phi_i
