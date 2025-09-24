@@ -33,10 +33,11 @@ def Shapley(X,y, model_type, value_function):
         coalition = set(coalition_tuple)
         if len(coalition) > 0:
             X_train, X_test, y_train, y_test = train_test_split(X[list(coalition)], y, test_size=0.2, random_state=42)
-            model = model_type(random_state=42)
+
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
             mae = value_function(y_test, y_pred)
+
             results.append([coalition, 1 - mae])
         else:
             results.append([coalition, 0])
@@ -63,9 +64,9 @@ if __name__ == "__main__":
     y = wine['quality']
     X = wine.drop(columns=['quality'])
 
-    models = {'DecisionTreeRegressor': DecisionTreeRegressor,
-              'RandomForestRegressor': RandomForestRegressor,
-              'LinearRegression'     : LinearRegression}
+    models = {'DecisionTreeRegressor': DecisionTreeRegressor(random_state=42),
+              'RandomForestRegressor': RandomForestRegressor(random_state=42),
+              'LinearRegression'     : LinearRegression()}
     print('==========================')
     for name, model in models.items():
         print(name)
