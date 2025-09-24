@@ -2,6 +2,8 @@ import os
 import math
 import pandas as pd
 from itertools import chain,  combinations
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
@@ -61,7 +63,11 @@ if __name__ == "__main__":
     y = wine['quality']
     X = wine.drop(columns=['quality'])
 
-    Shapley = Shapley(X, y, RandomForestRegressor, mean_absolute_error)
-
-
-    print(Shapley)
+    models = {'DecisionTreeRegressor': DecisionTreeRegressor,
+              'RandomForestRegressor': RandomForestRegressor,
+              'LinearRegression'     : LinearRegression}
+    print('==========================')
+    for name, model in models.items():
+        print(name)
+        print(Shapley(X, y, model, mean_absolute_error))
+        print('==========================')
