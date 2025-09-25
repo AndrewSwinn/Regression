@@ -74,20 +74,21 @@ def Experiments(X, y, models, value_function ):
         print(results)
     return results
 
-def SynthExperiments(X, y,models, value_function ):
+def SynthExperiments(X, y,models, value_function, covariance=False ):
     results = pd.DataFrame(index=list(X.columns), columns=models.keys())
     for name, model in models.items():
         synth_model = copy.deepcopy(model)
         synth_model.fit(X, y)
 
-        #synthX = np.random.multivariate_normal(mean=X.mean(), cov=np.diag(X.std()), size=1000)
-        synthX = np.random.multivariate_normal(mean=X.mean(), cov=X.cov(), size=1000)
+        if covariance:
+            synthX = np.random.multivariate_normal(mean=X.mean(), cov=X.cov(), size=1000)
+        else:
+            synthX = np.random.multivariate_normal(mean=X.mean(), cov=np.diag(X.std()), size=1000)
+
         synthX = pd.DataFrame(synthX, columns=X.columns)
         synthy = synth_model.predict(synthX)
 
         phi_i = Shapley(synthX, synthy, model, value_function)
-        print("===========================")
-        print(name)
         for feature, phi in phi_i.items():
             print(feature,',', phi)
             results.at[feature, name] = phi
@@ -108,11 +109,14 @@ if __name__ == "__main__":
               'RandomForestRegressor': RandomForestRegressor(random_state=42),
               'LinearRegression'     : LinearRegression()}
 
-    #results = Experiments(X, y, models, r2_score )
+    results = Experiments(X, y, models, r2_score )
+    results.to_csv(os.path.join(os.pardir, 'results_data.csv'))
 
+    results = SynthExperiments(X, y, models, r2_score, covariance=True )
+    results.to_csv(os.path.join(os.pardir, 'results_cov.csv'))
 
-    results = SynthExperiments(X, y, models, r2_score)
+    results = SynthExperiments(X, y, models, r2_score, covariance=False )
+    results.to_csv(os.path.join(os.pardir, 'results_nocov.csv'))
 
-    print(results)
 
 
