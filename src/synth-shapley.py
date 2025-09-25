@@ -2,6 +2,7 @@ import os
 import math
 import copy
 import pandas as pd
+import numpy as np
 from itertools import chain,  combinations
 
 from lark.utils import OrderedSet
@@ -73,6 +74,25 @@ def Experiments(X, y, models, value_function ):
         print(results)
     return results
 
+def SynthExperiments(X, y,models, value_function ):
+    results = pd.DataFrame(index=list(X.columns), columns=models.keys())
+    for name, model in models.items():
+        synth_model = copy.deepcopy(model)
+        model.fit(X, y)
+
+        synthX = np.random.multivariate_normal(mean=X.mean(), cov=np.diag(X.std()), size=1000)
+        synthX = pd.DataFrame(synthX, columns=X.columns)
+        synthy = model.predict(synthX)
+
+        phi_i = Shapley(synthX, synthy, model, value_function)
+        print("===========================")
+        print(name)
+        for feature, phi in phi_i.items():
+            print(feature,',', phi)
+            results.at[feature, name] = phi
+
+    return results
+
 
 if __name__ == "__main__":
 
@@ -81,13 +101,16 @@ if __name__ == "__main__":
     y = wine['quality']
     X = wine.drop(columns=['quality'])
 
-    models = {'Multilayer Perceptron': MLPRegressor(loss='squared_error', hidden_layer_sizes=(20, 20), max_iter=10000),
+    models = {'DecisionTreeRegressor': DecisionTreeRegressor(random_state=42),
+              'Multilayer Perceptron': MLPRegressor(loss='squared_error', hidden_layer_sizes=(20, 20), max_iter=10000),
               'SupportVectorMachine' : SVR(),
-              'DecisionTreeRegressor': DecisionTreeRegressor(random_state=42),
               'RandomForestRegressor': RandomForestRegressor(random_state=42),
               'LinearRegression'     : LinearRegression()}
 
-    results = Experiments(X, y, models, r2_score )
+    #results = Experiments(X, y, models, r2_score )
+
+
+    results = SynthExperiments(X, y, models, r2_score)
 
     print(results)
 
