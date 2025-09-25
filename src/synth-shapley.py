@@ -80,5 +80,6 @@ if __name__ == "__main__":
               'LinearRegression'     : LinearRegression()}
 
     results = Experiments(X, y, models, r2_score )
+    print(results)
 
 
