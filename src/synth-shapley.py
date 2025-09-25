@@ -78,12 +78,12 @@ def SynthExperiments(X, y,models, value_function ):
     results = pd.DataFrame(index=list(X.columns), columns=models.keys())
     for name, model in models.items():
         synth_model = copy.deepcopy(model)
-        model.fit(X, y)
+        synth_model.fit(X, y)
 
         #synthX = np.random.multivariate_normal(mean=X.mean(), cov=np.diag(X.std()), size=1000)
-        synthX = np.random.multivariate_normal(mean=X.mean(), cov=X.cov()), size=1000)
+        synthX = np.random.multivariate_normal(mean=X.mean(), cov=X.cov(), size=1000)
         synthX = pd.DataFrame(synthX, columns=X.columns)
-        synthy = model.predict(synthX)
+        synthy = synth_model.predict(synthX)
 
         phi_i = Shapley(synthX, synthy, model, value_function)
         print("===========================")
