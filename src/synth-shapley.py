@@ -9,6 +9,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.svm import SVR
+from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
@@ -80,7 +81,8 @@ if __name__ == "__main__":
     y = wine['quality']
     X = wine.drop(columns=['quality'])
 
-    models = {'SupportVectorMachine' : SVR(),
+    models = {'Multilayer Perceptron': MLPRegressor(loss='squared_error', hidden_layer_sizes=(20, 20), max_iter=10000),
+              'SupportVectorMachine' : SVR(),
               'DecisionTreeRegressor': DecisionTreeRegressor(random_state=42),
               'RandomForestRegressor': RandomForestRegressor(random_state=42),
               'LinearRegression'     : LinearRegression()}
