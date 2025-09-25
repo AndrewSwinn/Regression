@@ -1,7 +1,10 @@
 import os
 import math
+import copy
 import pandas as pd
 from itertools import chain,  combinations
+
+from lark.utils import OrderedSet
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
@@ -13,8 +16,9 @@ def powerset(iterable):
     s = list(iterable)
     return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
 
-def Shapley(X,y, model_type, value_function):
-    def value(S, results):
+def Shapley(X,y, model_base, value_function):
+
+    def get_value(S, results):
         if len(S) == 0: return 0
         for coalition, value in results:
             if S == set(coalition):
@@ -25,7 +29,7 @@ def Shapley(X,y, model_type, value_function):
         S = len(coalition)
         return math.factorial(S) * math.factorial(N - S - 1) / math.factorial(N)
 
-    players = set(X.columns)
+    players = OrderedSet(X.columns)
 
     #Step 1: Train and evaluate model for all possible coalitions
     results = []
@@ -33,12 +37,11 @@ def Shapley(X,y, model_type, value_function):
         coalition = set(coalition_tuple)
         if len(coalition) > 0:
             X_train, X_test, y_train, y_test = train_test_split(X[list(coalition)], y, test_size=0.2, random_state=42)
-
+            model = copy.deepcopy(model_base)
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
-            mae = value_function(y_test, y_pred)
-
-            results.append([coalition, 1 - mae])
+            value  = value_function(y_test, y_pred)
+            results.append([coalition, value])
         else:
             results.append([coalition, 0])
 
@@ -51,20 +54,21 @@ def Shapley(X,y, model_type, value_function):
         for coalition_minus in powerset(players_minus):
             coalition_minus = set(coalition_minus)
             coalition       = coalition_minus.union({i})
-            marginal        = value(coalition, results) - value(coalition_minus, results)
+            marginal        = get_value(coalition, results) - get_value(coalition_minus, results)
             phi += gamma(players, coalition_minus) * marginal
         phi_i[i] = phi
 
     return phi_i
 
 def Experiments(X, y, models, value_function ):
-    results = dict()
+    results = pd.DataFrame(index=list(X.columns), columns=models.keys())
     for name, model in models.items():
         phi_i = Shapley(X, y, model, value_function)
         print(name)
         for feature, phi in phi_i.items():
             print(feature,',', phi)
-        results[name] = phi_i
+            results.at[feature, name] = phi
+        print(results)
     return results
 
 
@@ -80,6 +84,7 @@ if __name__ == "__main__":
               'LinearRegression'     : LinearRegression()}
 
     results = Experiments(X, y, models, r2_score )
+
     print(results)
 
 
