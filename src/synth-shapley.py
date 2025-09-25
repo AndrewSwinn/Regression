@@ -80,7 +80,8 @@ def SynthExperiments(X, y,models, value_function ):
         synth_model = copy.deepcopy(model)
         model.fit(X, y)
 
-        synthX = np.random.multivariate_normal(mean=X.mean(), cov=np.diag(X.std()), size=1000)
+        #synthX = np.random.multivariate_normal(mean=X.mean(), cov=np.diag(X.std()), size=1000)
+        synthX = np.random.multivariate_normal(mean=X.mean(), cov=X.cov()), size=1000)
         synthX = pd.DataFrame(synthX, columns=X.columns)
         synthy = model.predict(synthX)
 
