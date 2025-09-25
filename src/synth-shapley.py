@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 
 def powerset(iterable):
@@ -57,6 +57,17 @@ def Shapley(X,y, model_type, value_function):
 
     return phi_i
 
+def Experiments(X, y, models, value_function ):
+    results = dict()
+    for name, model in models.items():
+        phi_i = Shapley(X, y, model, value_function)
+        print(name)
+        for feature, phi in phi_i.items():
+            print(feature,',', phi)
+        results[name] = phi_i
+    return results
+
+
 if __name__ == "__main__":
 
     #Prepare data
@@ -67,10 +78,7 @@ if __name__ == "__main__":
     models = {'DecisionTreeRegressor': DecisionTreeRegressor(random_state=42),
               'RandomForestRegressor': RandomForestRegressor(random_state=42),
               'LinearRegression'     : LinearRegression()}
-    print('==========================')
-    for name, model in models.items():
-        print(name)
-        phi_i = Shapley(X, y, model, mean_absolute_error)
-        for feature, phi in phi_i.items():
-            print(feature,',', phi)
-        print('==========================')
+
+    results = Experiments(X, y, models, r2_score )
+
+
