@@ -99,9 +99,13 @@ def SynthExperiments(X, y,models, value_function, covariance=False ):
 if __name__ == "__main__":
 
     #Prepare data
-    wine = pd.read_csv(os.path.join(os.pardir, 'wine.csv'))
-    y = wine['quality']
-    X = wine.drop(columns=['quality'])
+    #wine = pd.read_csv(os.path.join(os.pardir, 'wine.csv'))
+    #y = wine['quality']
+    #X = wine.drop(columns=['quality'])
+
+    day = pd.read_csv(os.path.join(os.pardir, 'day.csv'))
+    y = day['cnt']
+    X = day.drop(columns=['instant', 'dteday', 'cnt'])
 
     models = {'DecisionTreeRegressor': DecisionTreeRegressor(random_state=42),
               'Multilayer Perceptron': MLPRegressor(loss='squared_error', hidden_layer_sizes=(20, 20), max_iter=10000),
