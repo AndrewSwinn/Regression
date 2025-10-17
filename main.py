@@ -69,7 +69,8 @@ X_cov_inv = np.linalg.inv(X_cov)
 X_train, y_train = np.array(X_train), np.array(y_train)
 X_test,  y_test  = np.array(X_test),  np.array(y_test)
 
-start_idx, end_idx = 0, 9
+start_idx, end_idx = 0, 7
+
 
 explain = {'position': X_train,           'target': y_train}
 start   = {'position': X_test[start_idx], 'target': y_test[start_idx]}
@@ -81,4 +82,5 @@ print(start_val, end_val)
 phi_T = 0
 for player, phi_i in phi.items():
     phi_T += phi_i
-    print(players[player], start['position'][player], phi_i, phi_T)
+    #print(players[player], start['position'][player], round(phi_i,4), phi_T)
+    print( round(phi_i, 4) )
